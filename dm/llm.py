@@ -24,3 +24,20 @@ def query_llm(model: str, system_prompt: str, user_prompt: str) -> str:
     response.raise_for_status()
 
     return response.json()["response"]
+
+
+def generate(model: str, prompt: str, temperature: float = 0.0) -> str:
+    """
+    Compatibility wrapper expected by `dm.DungeonMaster`.
+    Sends the full composed prompt to the LLM and returns text.
+    """
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "temperature": temperature,
+        "stream": False,
+    }
+
+    response = requests.post(OLLAMA_URL, json=payload)
+    response.raise_for_status()
+    return response.json().get("response", "")
